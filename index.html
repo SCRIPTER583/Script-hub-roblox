@@ -1,302 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Roblox Script Hub</title>
-  <style>
-    * {margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif;}
-
-    body {
-      background: linear-gradient(135deg, rgba(30,30,30,0.95), rgba(60,60,60,0.95));
-      color: white;
-      height: 100vh;
-      overflow: hidden;
-      transition: background 0.3s, color 0.3s;
-    }
-    body.light {
-      background: linear-gradient(135deg, #f9f9f9, #ececec);
-      color: #222;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      left: -220px;
-      top: 0;
-      width: 220px;
-      height: 100%;
-      background: rgba(20,20,20,0.95);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      transition: left 0.3s ease;
-      box-shadow: 3px 0 10px rgba(0,0,0,0.5);
-      z-index: 999;
-    }
-    body.light .sidebar {background: rgba(255,255,255,0.95);}
-    .sidebar.active {left: 0;}
-    .sidebar h2 {margin-bottom: 20px; font-size: 20px;}
-    .sidebar a {
-      display: block;
-      color: inherit;
-      text-decoration: none;
-      margin: 10px 0;
-      padding: 8px;
-      border-radius: 8px;
-      transition: background 0.2s;
-    }
-    .sidebar a:hover {background: rgba(255,255,255,0.1);}
-
-    /* Toggle button */
-    .toggle-btn {
-      position: fixed;
-      left: 10px;
-      top: 10px;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: inherit;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      z-index: 1000;
-      transition: background 0.2s;
-    }
-    .toggle-btn:hover {background: rgba(255,255,255,0.2);}
-
-    /* Content */
-    .content {
-      margin-left: 0;
-      padding: 20px;
-      transition: margin-left 0.3s ease, opacity 0.3s;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .sidebar.active ~ .content {opacity: 0.2; pointer-events:none;}
-
-    .card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 15px;
-      padding: 25px;
-      width: 600px;
-      max-width: 90%;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-      text-align: center;
-      display: none;
-      transition: transform 0.2s;
-      overflow-y: auto;
-      max-height: 80vh;
-    }
-    .card.active {display: block;}
-    body.light .card {background: rgba(0,0,0,0.05);}
-
-    h1 {font-size: 24px; margin-bottom: 10px;}
-    p {margin-bottom: 10px; line-height: 1.5;}
-
-    /* Search bar */
-    .search-bar {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      margin-bottom: 20px;
-    }
-
-    /* Script box */
-    .script-entry {
-      margin-bottom: 25px;
-      text-align: left;
-    }
-    .script-title {
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    .script-box {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: inherit;
-      resize: none;
-      height: 120px;
-      margin-bottom: 10px;
-    }
-    .copy-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      background: rgb(0,123,255);
-      color: white;
-      cursor: pointer;
-    }
-    .copy-btn:hover {background: rgb(0,100,210);}
-    .success {margin-top: 10px; color: #4caf50; display: none;}
-    body.light .success {color: green;}
-
-    /* Settings controls */
-    .setting {margin: 15px 0;}
-    select, button.toggle-mode, button.upload-btn {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>🔥 Roblox Lua Script Hub 🔥</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; background:#1e1e2f; color:white; overflow:hidden; }
+  header { background: rgba(0,0,0,0.7); padding: 15px; text-align: center; font-size: 22px; }
+  .container { padding: 20px; }
+  textarea { width:100%; height:120px; border-radius:8px; padding:10px; background:#2c2c3a; color:white; border:none; resize:none; }
+  button { margin-top:10px; padding:10px 15px; border:none; border-radius:6px; cursor:pointer; background:rgb(0,123,255); color:white; }
+  .script-list { margin-top:20px; padding:10px; background: rgba(255,255,255,0.1); border-radius:10px; max-height:300px; overflow-y:auto; }
+  .script-item { margin-bottom:15px; padding:10px; border-radius:6px; background: rgba(0,0,0,0.3); }
+  .copy-btn { margin-top:5px; background: rgb(40,167,69); color:white; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; }
+</style>
 </head>
 <body>
+<header>🔥 Roblox Lua Script Hub 🔥</header>
+<div class="container">
+  <h3>Upload your own script</h3>
+  <textarea id="scriptInput" placeholder="Paste your Lua script here..."></textarea>
+  <button id="uploadBtn">Upload Script</button>
 
-  <div class="sidebar" id="sidebar">
-    <h2>Menu</h2>
-    <a href="#" onclick="showPage('home')">🏠 Home</a>
-    <a href="#" onclick="showPage('scripts')">📜 Scripts</a>
-    <a href="#" onclick="showPage('settings')">⚙ Settings</a>
-  </div>
+  <h3>Available Scripts</h3>
+  <div id="scriptList" class="script-list"></div>
+</div>
 
-  <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-  <div class="content">
+  // 🔹 Your Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSaYjTMcky_ZujbzYUKpdxNaLJr1QyuVs",
+    authDomain: "script-hub-roblox.firebaseapp.com",
+    projectId: "script-hub-roblox",
+    storageBucket: "script-hub-roblox.appspot.com",
+    messagingSenderId: "421126428585",
+    appId: "1:421126428585:web:bf814c7e1557351a04d6b8",
+    measurementId: "G-HQQ03V2QXF"
+  };
 
-    <!-- Home -->
-    <div class="card active" id="home">
-      <h1>The No. 1 Roblox Lua Script Hub</h1>
-      <h3>Introduction</h3>
-      <p>💻 Verified scripts safe to use and optimized</p>
-      <p><small>(Not guaranteed safe but use at your own risk)</small></p>
-      <p>💲 Free scripts — we don’t want money</p>
-      <p><small>(Some scripts might have keys though)</small></p>
-    </div>
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    <!-- Scripts -->
-    <div class="card" id="scripts">
-      <h1>Scripts</h1>
-      <input type="text" class="search-bar" id="searchInput" placeholder="Search scripts..." onkeyup="filterScripts()">
-      <div id="scriptList"></div>
-    </div>
-
-    <!-- Settings -->
-    <div class="card" id="settings">
-      <h1>Settings</h1>
-      <div class="setting">
-        <label>🖥 UI Scaling:</label>
-        <select id="scaleSelect" onchange="changeScale(this.value)">
-          <option value="1">Default</option>
-          <option value="0.9">Small</option>
-          <option value="1.1">Large</option>
-        </select>
-      </div>
-      <div class="setting">
-        <label>🌙 Theme:</label>
-        <button class="toggle-mode" onclick="toggleTheme()">Toggle Dark/Light</button>
-      </div>
-      <div class="setting">
-        <h3>📤 Upload Script</h3>
-        <input type="text" id="scriptName" placeholder="Script title"><br><br>
-        <textarea id="scriptContent" placeholder="Paste your Lua script here..." rows="6" style="width:100%; border-radius:8px;"></textarea><br><br>
-        <button class="upload-btn" onclick="uploadScript()">Upload</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-
-  <script>
-    // ✅ Firebase config fixed
-    const firebaseConfig = {
-      apiKey: "AIzaSyBSaYjTMcky_ZujbzYUKpdxNaLJr1QyuVs",
-      authDomain: "script-hub-roblox.firebaseapp.com",
-      projectId: "script-hub-roblox",
-      storageBucket: "script-hub-roblox.appspot.com",
-      messagingSenderId: "421126428585",
-      appId: "1:421126428585:web:7280c4feb1c948ca04d6b8",
-      measurementId: "G-7KCNWLYG0R"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
-
-    function showPage(pageId) {
-      document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      document.getElementById("sidebar").classList.remove("active");
-    }
-
-    function copyScript(btn) {
-      const scriptBox = btn.previousElementSibling;
-      scriptBox.select();
-      navigator.clipboard.writeText(scriptBox.value);
-      const msg = btn.nextElementSibling;
-      msg.style.display = "block";
-      setTimeout(() => msg.style.display = "none", 2000);
-    }
-
-    function filterScripts() {
-      let input = document.getElementById("searchInput").value.toLowerCase();
-      let entries = document.querySelectorAll(".script-entry");
-      entries.forEach(entry => {
-        const title = entry.querySelector(".script-title").textContent.toLowerCase();
-        entry.style.display = title.includes(input) ? "block" : "none";
-      });
-    }
-
-    function changeScale(scale) {
-      document.body.style.transform = `scale(${scale})`;
-      document.body.style.transformOrigin = "top center";
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-    }
-
-    // 🔹 Upload script to Firestore
-    async function uploadScript() {
-      const name = document.getElementById("scriptName").value;
-      const content = document.getElementById("scriptContent").value;
-      if (!name || !content) {
-        alert("⚠️ Please enter a title and paste your script.");
-        return;
-      }
-
-      await db.collection("scripts").add({
-        name: name,
-        content: content,
-        date: new Date().toISOString()
-      });
-
-      alert("✅ Script uploaded!");
-      loadScripts();
-    }
-
-    // 🔹 Load scripts from Firestore
-    async function loadScripts() {
-      const list = document.getElementById("scriptList");
-      list.innerHTML = "";
-      const snapshot = await db.collection("scripts").orderBy("date", "desc").get();
-
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const div = document.createElement("div");
-        div.className = "script-entry";
-        div.innerHTML = `
-          <div class="script-title">${data.name}</div>
-          <textarea class="script-box" readonly>${data.content}</textarea>
-          <button class="copy-btn" onclick="copyScript(this)">Copy Script</button>
-          <p class="success">✅ Copy Success!</p>
-        `;
-        list.appendChild(div);
-      });
-    }
-
+  // Upload script
+  document.getElementById("uploadBtn").onclick = async () => {
+    const text = document.getElementById("scriptInput").value.trim();
+    if (!text) return alert("⚠️ Paste your script first!");
+    
+    await addDoc(collection(db, "scripts"), {
+      content: text,
+      date: new Date().toISOString()
+    });
+    alert("✅ Script uploaded!");
+    document.getElementById("scriptInput").value = "";
     loadScripts();
-  </script>
+  };
+
+  // Load scripts
+  async function loadScripts() {
+    const list = document.getElementById("scriptList");
+    list.innerHTML = "";
+    const q = query(collection(db, "scripts"), orderBy("date", "desc"));
+    const querySnapshot = await getDocs(q);
+    
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const div = document.createElement("div");
+      div.className = "script-item";
+      div.innerHTML = `
+        <pre>${data.content}</pre>
+        <button class="copy-btn">Copy</button>
+      `;
+      div.querySelector(".copy-btn").onclick = () => {
+        navigator.clipboard.writeText(data.content);
+        alert("📋 Copied!");
+      };
+      list.appendChild(div);
+    });
+  }
+
+  loadScripts();
+</script>
 </body>
 </html>
